@@ -22,6 +22,7 @@ while i < len(sys.argv[2:]):
 
 tocompile = open(tocompile)
 tokens = compiler.Lexer.Lexer(tocompile.read()).generate_tokens()
+tocompile.close()
 text = iter(tokens)
 char = next(text)
 
@@ -108,8 +109,8 @@ while char is not None:
 
 open(f"{filename}.s", "w")
 file = open(f"{filename}.s", "a+")
-rfile = open(f"{filename}.s", "r")
 for i in sections.keys():
     file.write(i)
     for e in sections[i]:
         file.write(e)
+file.close()
