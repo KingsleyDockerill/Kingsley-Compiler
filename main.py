@@ -2,10 +2,12 @@ import compiler.Lexer
 import sys
 import os
 from compiler.Tokens import TokenType
+from strchar import Char
 
 ENDLABEL = "\tMOV R7, #1\n\tSWI 0\n"
 funcs = {"_putnumb{}\n": {"num": 0, "code": ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 1000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]
-                         }, "_start{}\n": {"num": 0, "code": ["\tB {}"]}}
+                         }, "_putstr{}\n": {"num": 0, "code": ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 10000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]},
+         "_putchar{}\n": {"num": 0, "code": ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 10000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]}}
 var = {}
 sections = {".text\n": [], ".global _start\n": ["_start:\n", ENDLABEL]}
 
@@ -50,16 +52,19 @@ while char is not None:
                 if char.type == TokenType.DQUOTE:
                     advance()
                     sections[".text\n"].append(f"{name}:\n\t.ascii \"{char.value}\"\n")
+                    var[name] = char.value
                     advance()
                 elif char.type == TokenType.SQUOTE:
                     advance()
-                    if len(char.value) <= 4:
-                        sections[".text\n"].append(f"{name}:\n\t.ascii \"{char.value}\"\n")
+                    if len(char.value) >= 4:
+                        sections[".text\n"].append(Char(f"{name}:\n\t.ascii \"{char.value}\"\n"))
+                        var[name] = Char(char.value)
                     else:
                         print("CharError: Length greater than 4")
                         exit(1)
+                    advance()
                 elif char.type == TokenType.INT:
-                    sections[".text\n"].append(f"{name}:\n\t.ascii \"{char.value}\"\n")
+                    sections[".text\n"].append(f"{name}:\n\t.ascii \"{char.value}\\n\"\n")
                     var[name] = int(char.value)
                 advance()
                 if char.type != TokenType.SEMI:
@@ -94,7 +99,60 @@ while char is not None:
                 sections["_putnumb{}\n".format(funcs["_putnumb{}\n"]["num"])][3] = sections["_putnumb{}\n".format(funcs["_putnumb{}\n"]["num"])][3].format(f"\"{char.value}\"")
             else:
                 print("TypeError: putnumb's argument must be a whole number")
+                exit(1)
             funcs["_putnumb{}\n"]["num"] += 1
+            advance()
+            if char.type != TokenType.RPAREN:
+                print("ParenthesesError: Expected right parentheses")
+                exit(1)
+            advance()
+            if char.type != TokenType.SEMI:
+                print("SemicolonMissingError: No end of line")
+                exit(1)
+        elif char.value == "putstr":
+            advance()
+            if char.type != TokenType.LPAREN:
+                print("ParenthesesError: Expected left parentheses")
+                exit(1)
+            advance()
+            # Don't know why this works, it just does, leave it
+            funcs["_putstr{}\n"]["code"] = ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 10000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]
+            sections["_putstr{}\n".format(funcs["_putstr{}\n"]["num"])] = funcs["_putstr{}\n"]["code"]
+            if char.value in var and type(var[char.value]) == str:
+                sections["_putstr{}\n".format(funcs["_putstr{}\n"]["num"])][3] = sections["_putstr{}\n".format(funcs["_putstr{}\n"]["num"])][3].format(char.value)
+            elif char.type == TokenType.DQUOTE:
+                advance()
+                sections["_putstr{}\n".format(funcs["_putstr{}\n"]["num"])][3] = sections["_putstr{}\n".format(funcs["_putstr{}\n"]["num"])][3].format(f"\"{char.value}\"")
+                advance()
+            else:
+                print("TypeError: putstr's argument must be a string with \"")
+            funcs["_putstr{}\n"]["num"] += 1
+            advance()
+            if char.type != TokenType.RPAREN:
+                print("ParenthesesError: Expected right parentheses")
+                exit(1)
+            advance()
+            if char.type != TokenType.SEMI:
+                print("SemicolonMissingError: No end of line")
+                exit(1)
+        elif char.value == "putchar":
+            advance()
+            if char.type != TokenType.LPAREN:
+                print("ParenthesesError: Expected left parentheses")
+                exit(1)
+            advance()
+            # Don't know why this works, it just does, leave it
+            funcs["_putchar{}\n"]["code"] = ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 10000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]
+            sections["_putchar{}\n".format(funcs["_putchar{}\n"]["num"])] = funcs["_putchar{}\n"]["code"]
+            if char.value in var and type(var[char.value]) == Char:
+                sections["_putchar{}\n".format(funcs["_putchar{}\n"]["num"])][3] = sections["_putchar{}\n".format(funcs["_putchar{}\n"]["num"])][3].format(char.value)
+            elif char.type == TokenType.SQUOTE:
+                advance()
+                sections["_putchar{}\n".format(funcs["_putchar{}\n"]["num"])][3] = sections["_putchar{}\n".format(funcs["_putchar{}\n"]["num"])][3].format(f"\"{char.value}\"")
+                advance()
+            else:
+                print("TypeError: putchar's argument must be a char with '")
+            funcs["_putchar{}\n"]["num"] += 1
             advance()
             if char.type != TokenType.RPAREN:
                 print("ParenthesesError: Expected right parentheses")

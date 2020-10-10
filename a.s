@@ -1,10 +1,18 @@
 .text
 a:
-	.ascii "5"
+	.ascii "5\n"
 b:
-	.ascii "6"
+	.ascii "6\n"
 c:
-	.ascii "7"
+	.ascii "Hello, world!"
+d:
+	.ascii "This"
+e:
+	.ascii " is "
+f:
+	.ascii "putc"
+g:
+	.ascii "har*n"
 .global _start
 _start:
 	MOV R7, #1
@@ -21,9 +29,33 @@ _putnumb1
 	MOV R2, #1000 @ MAX NUM LEN 1000
 	LDR R1, =b
 	SWI 0
-_putnumb2
+_putstr0
 	MOV R7, #4
 	MOV R0, #1
-	MOV R2, #1000 @ MAX NUM LEN 1000
+	MOV R2, #1000 @ MAX NUM LEN 10000
 	LDR R1, =c
+	SWI 0
+_putchar0
+	MOV R7, #4
+	MOV R0, #1
+	MOV R2, #1000 @ MAX NUM LEN 10000
+	LDR R1, =d
+	SWI 0
+_putchar1
+	MOV R7, #4
+	MOV R0, #1
+	MOV R2, #1000 @ MAX NUM LEN 10000
+	LDR R1, =e
+	SWI 0
+_putchar2
+	MOV R7, #4
+	MOV R0, #1
+	MOV R2, #1000 @ MAX NUM LEN 10000
+	LDR R1, =f
+	SWI 0
+_putchar3
+	MOV R7, #4
+	MOV R0, #1
+	MOV R2, #1000 @ MAX NUM LEN 10000
+	LDR R1, =g
 	SWI 0

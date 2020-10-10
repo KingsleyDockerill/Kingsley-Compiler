@@ -150,7 +150,7 @@ class Lexer:
         string = ""
         if is_dquote is True:
             while self.current_char is not None and self.current_char != "\"":
-                if self.current_char == "\\":
+                if self.current_char == "*":
                     self.advance()
                     if self.current_char == "t":
                         string += "\t"
