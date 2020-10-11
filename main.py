@@ -212,7 +212,8 @@ while char is not None:
 open(f"{filename}.s", "w")
 file = open(f"{filename}.s", "a+")
 for i in sections.keys():
-    file.write(i)
+    # I made a mistake, this is my lazy workaround
+    file.write(f"{i[:len(i) - 1]}:{i[len(i) - 1]}")
     for e in sections[i]:
         file.write(e)
 file.close()
