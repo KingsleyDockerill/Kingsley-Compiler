@@ -4,6 +4,8 @@ import os
 from compiler.Tokens import TokenType
 from strchar import Char
 
+# NOTE TO REMEMBER: R6 WILL BE USED FOR getchar FUNCTION
+
 ENDLABEL = "\tMOV R7, #1\n\tSWI 0\n"
 funcs = {"_putnumb{}\n": {"num": 0, "code": ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #1000 @ MAX NUM LEN 1000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]
                          }, "_putstr{}\n": {"num": 0, "code": ["\tMOV R7, #4\n", "\tMOV R0, #1\n", "\tMOV R2, #10000 @ MAX NUM LEN 10000\n", "\tLDR R1, ={}\n", "\tSWI 0\n"]},

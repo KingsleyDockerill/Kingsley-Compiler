@@ -12,7 +12,7 @@ e:
 f:
 	.ascii "putc"
 g:
-	.ascii "har*n"
+	.ascii "har\n"
 h:
 	.ascii ""
 .global _start

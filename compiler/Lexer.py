@@ -152,21 +152,18 @@ class Lexer:
             while self.current_char is not None and self.current_char != "\"":
                 if self.current_char == "*":
                     self.advance()
-                    if self.current_char == "t":
-                        string += "\\t"
-                    elif self.current_char == "b":
-                        string += "\\b"
-                    elif self.current_char == "n":
-                        string += "\\n"
+                    if self.current_char == "*":
+                        string += "*"
                     else:
-                        string += self.current_char
+                        string += "\\" + self.current_char
                     self.advance()
                 else:
                     string += self.current_char
                     self.advance()
         else:
             while self.current_char is not None and self.current_char != "'":
-                if self.current_char == "\\":
+                if self.current_char == "*":
+                    string += "\\"
                     self.advance()
                     string += self.current_char
                     self.advance()
