@@ -217,9 +217,3 @@ for i in sections.keys():
     for e in sections[i]:
         file.write(e)
 file.close()
-os.system(f"as {filename}.s -o {filename}.o")
-os.system(f"ld {filename}.o -o {filename}")
-if not keepasm:
-    os.remove(f"{filename}.s")
-    os.remove(f"{filename}.o")
-os.system(f"./{filename}")
