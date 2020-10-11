@@ -153,11 +153,11 @@ class Lexer:
                 if self.current_char == "*":
                     self.advance()
                     if self.current_char == "t":
-                        string += "\t"
+                        string += "\\t"
                     elif self.current_char == "b":
-                        string += "\b"
+                        string += "\\b"
                     elif self.current_char == "n":
-                        string += "\n"
+                        string += "\\n"
                     else:
                         string += self.current_char
                     self.advance()

@@ -9,11 +9,14 @@ main()
     auto e = ' is ';
     auto f = 'putc';
     auto g = 'har*n';
-    putnumb(a);
+    auto h = ""; // This assigns h as nothing so it will be equal to input
+    putnumb(&a);
     putnumb(b);
     putstr(c);
     putchar(d);
     putchar(e);
     putchar(f);
     putchar(g);
+    getstr(h);
+    putstr(h);
 }
