@@ -23,7 +23,7 @@ _putnumb0:
 	MOV R7, #4
 	MOV R0, #1
 	MOV R2, #1000 @ MAX NUM LEN 1000
-	ADR R1, =a
+	LDR R1, =a
 	SWI 0
 _putnumb1:
 	MOV R7, #4
